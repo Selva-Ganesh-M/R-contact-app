@@ -1,9 +1,14 @@
 import "./App.css";
+import Header from "./components/Header";
+import AddComponent from "./components/AddComponent";
+import ContactList from "./components/ContactList";
 
 function App() {
   return (
-    <div className="App">
-      <h1>Working react app</h1>
+    <div>
+      <Header />
+      {/* <AddComponent />
+      <ContactList /> */}
     </div>
   );
 }
