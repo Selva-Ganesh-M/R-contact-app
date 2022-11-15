@@ -4,9 +4,11 @@ import ContactCard from "./ContactCard";
 function ContactList({ contacts }) {
   return (
     <div className="ui celled list">
-      {contacts.map((contact) => (
-        <ContactCard key={contact.id} contact={contact} />
-      ))}
+      {contacts.length !== 0
+        ? contacts.map((contact) => (
+            <ContactCard key={contact.id} contact={contact} />
+          ))
+        : null}
     </div>
   );
 }
