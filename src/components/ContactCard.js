@@ -1,18 +1,23 @@
-import React, { useContext } from "react";
-import { deleteContext } from "../App";
+import React from "react";
+import { Link } from "react-router-dom";
 
 function ContactCard({ contact }) {
   const { id, title, email } = contact;
-  const { handleDelete } = useContext(deleteContext);
   return (
     <div className="item">
       <div className="content">
-        <div className="header">{title}</div>
-        <div>{email}</div>
-        <i
-          onClick={() => handleDelete(id)}
-          className="trash alternate outline icon"
-        ></i>
+        <Link
+          to={`/contact/${id}`}
+          state={{
+            contact: contact,
+          }}
+        >
+          <div className="header">{title}</div>
+          <div>{email}</div>
+        </Link>
+        <Link to={`/contact/delete/${id}`} state={contact}>
+          <i className="trash right red outline alternate icon"></i>
+        </Link>
       </div>
     </div>
   );
