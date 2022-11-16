@@ -3,13 +3,21 @@ import "./App.css";
 import Header from "./components/Header";
 import AddContact from "./components/AddContact";
 import ContactList from "./components/ContactList";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
-  const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState(
+    JSON.parse(localStorage.getItem("contacts"))
+  );
+
+  useEffect(() => {
+    localStorage.setItem("contacts", JSON.stringify(contacts));
+  }, [contacts]);
+
   const addContactHandler = (contact) => {
     setContacts([...contacts, { ...contact, id: uuid() }]);
   };
+
   return (
     <div className="ui container">
       <Header />
