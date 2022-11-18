@@ -1,56 +1,67 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import uuid from "react-uuid";
 
 import Header from "./components/Header";
 import AddContact from "./components/AddContact";
 import ContactList from "./components/ContactList";
 import ContactDetails from "./components/ContactDetails";
 import DeleteContact from "./components/DeleteContact";
+import EditContact from "./components/EditContact";
 
 import "./App.css";
+import useFetch from "./customHooks/useFetch";
+import useFunctions from "./customHooks/useFunctions";
+
+export const OverAllContext = React.createContext();
 
 function App() {
-  const [contacts, setContacts] = useState(
-    JSON.parse(localStorage.getItem("contacts"))
-  );
+  // declararions
+  const [contacts, setContacts] = useState([]);
 
-  useEffect(() => {
-    localStorage.setItem("contacts", JSON.stringify(contacts));
-  }, [contacts]);
+  // custom hooks usage
+  // fetching data
+  useFetch({ contacts, setContacts });
+  // receiving necessery functions
+  const { addContactHandler, handleDelete } = useFunctions({
+    contacts,
+    setContacts,
+  });
 
-  const addContactHandler = (contact) => {
-    setContacts([...contacts, { ...contact, id: uuid() }]);
-  };
-
-  const handleDelete = (id) => {
-    setContacts(
-      contacts.filter((contact) => {
-        return contact.id !== id;
-      })
-    );
-  };
-
+  // returning jsx
   return (
-    <div className="ui container">
-      <Router>
-        <Header />
-        <Routes>
-          <Route
-            path="/add"
-            exact
-            element={<AddContact addContactHandler={addContactHandler} />}
-          />
-          <Route path="/" exact element={<ContactList contacts={contacts} />} />
-          <Route path="/contact/:id" exact element={<ContactDetails />} />
-          <Route
-            path="/contact/delete/:id"
-            exact
-            element={<DeleteContact handleDelete={handleDelete} />}
-          />
-        </Routes>
-      </Router>
-    </div>
+    <OverAllContext.Provider
+      value={{ addContactHandler, handleDelete, contacts, setContacts }}
+    >
+      <div className="ui container">
+        <Router>
+          <Header />
+          <Routes>
+            {/* /add route */}
+            <Route
+              path="/add"
+              exact
+              element={<AddContact addContactHandler={addContactHandler} />}
+            />
+            {/* Home route */}
+            <Route
+              path="/"
+              exact
+              element={<ContactList contacts={contacts} />}
+            />
+            {/* contact details route */}
+            <Route path="/contact/:id" exact element={<ContactDetails />} />
+            {/* contact delete route */}
+            <Route
+              path="/contact/delete/:id"
+              exact
+              element={<DeleteContact handleDelete={handleDelete} />}
+            />
+            {/* contact edit route */}
+            <Route path="/contact/edit/:id" exact element={<EditContact />} />
+          </Routes>
+        </Router>
+      </div>
+    </OverAllContext.Provider>
   );
 }
 

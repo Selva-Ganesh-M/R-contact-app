@@ -2,11 +2,18 @@ import React from "react";
 
 function Header() {
   return (
-    <div className="ui relative menu">
-      <div className="ui container center">
-        <h2>Contact Manager</h2>
-      </div>
-    </div>
+    <nav>
+      <h1
+        style={{
+          padding: "1em",
+          backgroundColor: "whitesmoke",
+          marginBottom: "1em",
+          borderRadius: " 0 0 10px 10px",
+        }}
+      >
+        Contact Manager
+      </h1>
+    </nav>
   );
 }
 

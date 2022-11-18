@@ -1,67 +1,91 @@
-import React, { Component } from "react";
+import React, {
+  Component,
+  useState,
+  useContext,
+  useRef,
+  useEffect,
+} from "react";
 import { Link, Navigate } from "react-router-dom";
+import { OverAllContext } from "../App";
 
-export class AddContact extends Component {
-  state = {
+const AddContact = ({ addContactHandler }) => {
+  const inputRef = useRef(null);
+  const [contact, setContact] = useState({
     name: "",
     email: "",
-    isLoading: false,
-    redirect: false,
-  };
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [redirect, setRedirect] = useState(false);
 
-  addContact = (e) => {
+  const addContact = (e) => {
     console.log("form got submitted...");
-    this.setState({ isLoading: true });
+    setIsLoading(true);
     e.preventDefault();
-    if (this.state.name === "" || this.state.email === "") {
-      this.setState({ isLoading: false });
+    if (contact.name === "" || contact.email === "") {
+      setIsLoading(false);
       return;
     } else {
-      this.props.addContactHandler(this.state);
-      this.setState({ name: "", email: "", isLoading: false, redirect: true });
+      addContactHandler(contact);
+      setContact({ name: "", email: "" });
+      setIsLoading(false);
+      setRedirect(true);
     }
   };
+  const { contacts } = useContext(OverAllContext);
 
-  render() {
-    return (
-      <div className="ui main">
-        <h2>Create Contact</h2>
-        <form className="ui form" onSubmit={this.addContact}>
-          <div className="field">
-            <label>Name:</label>
-            <input
-              type="text"
-              name="name"
-              placeholder="name"
-              onChange={(e) => this.setState({ name: e.target.value })}
-              value={this.state.name}
-            />
-          </div>
-          <div className="field">
-            <label>Email:</label>
-            <input
-              type="text"
-              name="email"
-              placeholder="email"
-              onChange={(e) => this.setState({ email: e.target.value })}
-              value={this.state.email}
-            />
-          </div>
-          {this.state.isLoading && "Loading..."}
-          {!this.state.isLoading && (
-            <button type="submit" className="ui button blue">
-              Add
-            </button>
-          )}
-          <Link to="/">
-            <button className="ui button blue right">Home</button>
-          </Link>
-        </form>
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
 
-        {this.state.redirect && <Navigate to="/" replace={true} />}
-      </div>
-    );
-  }
-}
+  return (
+    <div className="ui main">
+      <h2>Create Contact</h2>
+      <form className="ui form" onSubmit={addContact}>
+        <div className="field">
+          <label>Name:</label>
+          <input
+            ref={inputRef}
+            type="text"
+            name="name"
+            placeholder="name"
+            onChange={(e) =>
+              setContact({
+                ...contact,
+                name: e.target.value,
+              })
+            }
+            value={contact.name}
+          />
+        </div>
+        <div className="field">
+          <label>Email:</label>
+          <input
+            type="text"
+            name="email"
+            placeholder="email"
+            onChange={(e) =>
+              setContact({
+                ...contact,
+                email: e.target.value,
+              })
+            }
+            value={contact.email}
+          />
+        </div>
+        {isLoading && "Loading..."}
+        {!isLoading && (
+          <button type="submit" className="ui button blue">
+            Add
+          </button>
+        )}
+        <Link to="/">
+          <button className="ui button blue right">Home</button>
+        </Link>
+      </form>
+
+      {redirect && <Navigate to="/" replace={true} />}
+    </div>
+  );
+};
 
 export default AddContact;
